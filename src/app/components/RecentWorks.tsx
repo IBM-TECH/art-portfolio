@@ -34,8 +34,7 @@ export default function RecentWorks() {
           </h2>
 
           <p className="mt-4 max-w-2xl text-sm leading-6 text-white/45">
-            A look at the latest artwork published by Luqss Arts.
-          </p>
+A look at the latest artwork published by Luqqss temmy.          </p>
         </div>
 
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

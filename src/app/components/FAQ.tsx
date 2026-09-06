@@ -5,20 +5,17 @@ import { ChevronDown } from "lucide-react";
 
 const faqs = [
   {
-    question: "What kind of creative work does Luqss Arts create?",
-    answer:
-      "Luqss Arts focuses on original digital artwork, illustration, character and concept work, and other visual creative projects.",
+    question: "What kind of creative work does Luqqss temmy create?",
+answer: "Luqqss temmy focuses on original digital artwork, illustration, character and concept work, and other visual creative projects.",
   },
   {
     question: "Can I commission a custom artwork?",
     answer:
-      "Yes. You can get in touch with Luqss Arts to discuss custom artwork, creative commissions, collaborations, or project-based work.",
+      "Yes. You can get in touch with Luqqss temmy to discuss custom artwork, creative commissions, collaborations, or project-based work.",
   },
   {
     question: "Can I use artwork from the website?",
-    answer:
-      "Artwork displayed on Luqss Arts belongs to the artist unless otherwise stated. Please contact Luqss Arts before using, reproducing, modifying, or distributing any artwork.",
-  },
+    answer: "Artwork displayed on Luqqss temmy belongs to the artist unless otherwise stated. Please contact Luqqss temmy before using, reproducing, modifying, or distributing any artwork.",  },
   {
     question: "How can I request a project or collaboration?",
     answer:
@@ -54,8 +51,7 @@ export default function FAQ() {
             </h2>
 
             <p className="mt-5 max-w-xs text-sm leading-6 text-white/45">
-              A few things you may want to know before exploring or working
-              with Luqss Arts.
+A few things you may want to know before exploring or working with Luqqss temmy.
             </p>
           </div>
 

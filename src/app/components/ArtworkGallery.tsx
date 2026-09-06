@@ -223,9 +223,9 @@ export default function ArtworkGallery() {
                       </p>
                     </div>
 
-                    <span className="text-xs text-white/25">
-                      Luqss Arts
-                    </span>
+<span className="text-xs text-white/25">
+  Luqqss temmy
+</span>
                   </div>
                 </Link>
               </article>

@@ -30,16 +30,17 @@ const socialLinks = [
 
 export default function Footer() {
   return (
-<footer className="border-t border-white/[0.06] bg-[#101113] text-white">      <div className="mx-auto max-w-7xl px-6 py-10 lg:px-10">
+    <footer className="border-t border-white/[0.06] bg-[#101113] text-white">
+      <div className="mx-auto max-w-7xl px-6 py-10 lg:px-10">
         <div className="flex flex-col gap-8 sm:flex-row sm:items-center sm:justify-between">
           {/* Footer left */}
           <div>
-            <p className="text-sm font-bold tracking-[-0.01em]">
-              Luqss Arts
+            <p className="text-sm font-semibold tracking-[-0.01em]">
+              Luqqss temmy
             </p>
 
             <p className="mt-2 text-xs text-white/30">
-              © 2026 Luqss Arts. All rights reserved.
+              © 2026 Luqqss temmy. All rights reserved.
             </p>
           </div>
 
@@ -62,7 +63,6 @@ export default function Footer() {
                     strokeWidth={1.8}
                     className="transition-transform group-hover:-translate-y-0.5"
                   />
-
                   <span>{social.label}</span>
                 </a>
               );

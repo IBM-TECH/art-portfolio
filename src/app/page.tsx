@@ -27,11 +27,11 @@ export default function Home() {
               Digital art · Illustration · Visual storytelling
             </p>
 
-            <h1 className="mt-6 text-6xl font-semibold tracking-[-0.06em] text-white sm:text-7xl lg:text-9xl">
-              Luqss
-              <br />
-              Arts
-            </h1>
+        <h1 className="mt-6 text-6xl font-semibold tracking-[-0.06em] text-white sm:text-7xl lg:text-9xl">
+  Luqqss
+  <br />
+  temmy
+</h1>
 
             <p className="mt-8 max-w-xl border-l border-violet-400/40 pl-5 text-sm leading-7 text-white/40 sm:text-base">
               An art discovery and creative community for original
@@ -49,66 +49,62 @@ export default function Home() {
       <RecentWorks />
 
       {/* About */}
-      <section
-        id="about"
-        className="border-t border-white/[0.06] bg-[#101113] px-6 py-24 lg:px-10 lg:py-32"
-      >
-        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-          <div>
-            <p className="text-[10px] font-medium uppercase tracking-[0.25em] text-white/30">
-              About Luqss Arts
-            </p>
+<section
+  id="about"
+  className="border-t border-white/[0.06] bg-[#101113] px-6 py-24 lg:px-10 lg:py-32"
+>
+  <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+    <div>
+      <p className="text-[10px] font-medium uppercase tracking-[0.25em] text-white/30">
+        About Luqqss temmy
+      </p>
 
-            <h2 className="mt-4 max-w-3xl text-4xl font-semibold tracking-[-0.05em] text-white sm:text-5xl">
-              Digital Illustrator & Comic Artist
-            </h2>
+      <h2 className="mt-4 max-w-3xl text-4xl font-semibold tracking-[-0.05em] text-white sm:text-5xl">
+        Digital Illustrator & Comic Artist
+      </h2>
 
-            <p className="mt-5 max-w-2xl text-base leading-7 text-cyan-300/80">
-              Specializing in character design, sequential art,
-              and vibrant digital storytelling.
-            </p>
+      <p className="mt-5 max-w-2xl border-l border-cyan-400/50 pl-5 text-base leading-7 text-cyan-300/90">
+        Specializing in character design, sequential art, and vibrant digital storytelling.
+      </p>
 
-            <p className="mt-6 max-w-2xl text-sm leading-7 text-white/40">
-              I'm Luqss Arts — a concept artist and art director
-              alongside a team with eight years of building worlds
-              that feel inhabited. My work sits at the seam between
-              hand-painted illustration and procedural 3D, leaning
-              hard into neon, atmosphere, and the quiet architecture
-              of imagined cities.
-            </p>
+      <div className="mt-8 max-w-2xl space-y-5 text-sm leading-7 text-white/45">
+        <p>
+          I'm Luqqss Temmy — a concept artist and art director alongside a team with eight years of building worlds that feel inhabited. My work sits at the seam between hand-painted illustration and procedural 3D, leaning hard into neon, atmosphere, and the quiet architecture of imagined cities.
+        </p>
 
-            <button
-              type="button"
-              className="mt-8 rounded-full bg-violet-500 px-6 py-3 text-sm font-medium text-white transition hover:bg-violet-400"
-            >
-              More about me
-            </button>
-          </div>
+        <p>
+          I've shipped art for AAA games, indie passion projects, music videos, two feature films I can't talk about yet, and a small library of brand systems for companies who wanted to look like the future. I run a small remote team and take on a maximum of four director-level engagements per year.
+        </p>
 
-          {/* Stats */}
-          <div className="grid grid-cols-2 gap-3">
-            {[
-              ["8+", "YEARS EXP"],
-              ["100+", "PROJECTS"],
-              ["20+", "CLIENTS"],
-              ["2+", "AWARDS"],
-            ].map(([number, label]) => (
-              <div
-                key={label}
-                className="glass glass-hover rounded-3xl p-6"
-              >
-                <p className="text-4xl font-semibold tracking-[-0.05em] text-white">
-                  {number}
-                </p>
+        <p>
+          When I'm not painting, on a long run, or arguing with my cat about the correct temperature of the studio.
+        </p>
+      </div>
+    </div>
 
-                <p className="mt-2 text-[10px] font-medium tracking-[0.2em] text-white/30">
-                  {label}
-                </p>
-              </div>
-            ))}
-          </div>
+    {/* Stats */}
+    <div className="grid grid-cols-2 gap-3">
+      {[
+        ["8+", "YEARS EXP"],
+        ["100+", "PROJECTS"],
+        ["20+", "CLIENTS"],
+        ["2+", "AWARDS"],
+      ].map(([number, label]) => (
+        <div
+          key={label}
+          className="rounded-3xl border border-white/[0.07] bg-white/[0.03] p-6"
+        >
+          <p className="text-4xl font-semibold tracking-[-0.05em] text-white">
+            {number}
+          </p>
+          <p className="mt-2 text-[10px] font-medium tracking-[0.2em] text-white/30">
+            {label}
+          </p>
         </div>
-      </section>
+      ))}
+    </div>
+  </div>
+</section>
 
       {/* Contact */}
       <section
@@ -124,10 +120,10 @@ export default function Home() {
             Let's connect.
           </h2>
 
-          <p className="mt-4 max-w-xl text-sm leading-7 text-white/40">
-            Have a project, commission or creative idea? Reach
-            out to Luqss Arts and let's talk.
-          </p>
+<p className="mt-4 max-w-xl text-sm leading-7 text-white/40">
+  Have a project, commission or creative idea? Reach
+  out to Luqqss temmy and let's talk.
+</p>
         </div>
       </section>
 
