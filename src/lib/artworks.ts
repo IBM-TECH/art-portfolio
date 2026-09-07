@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase";
 export type Artwork = {
   id: string;
   title: string;
+  slug: string;
   description: string | null;
   category_id: string | null;
   category: string;
@@ -11,47 +12,10 @@ export type Artwork = {
   created_at: string;
 };
 
-type SupabaseArtwork = {
-  id: string;
-  title: string;
-  description: string | null;
-  category_id: string | null;
-  image_url: string;
-  published_at: string;
-  created_at: string;
-  category: {
-    name: string;
-  }[] | null;
-};
-
-function formatArtwork(artwork: SupabaseArtwork): Artwork {
-  return {
-    id: artwork.id,
-    title: artwork.title,
-    description: artwork.description,
-    category_id: artwork.category_id,
-    category: artwork.category?.[0]?.name ?? "Uncategorized",
-    image_url: artwork.image_url,
-    published_at: artwork.published_at,
-    created_at: artwork.created_at,
-  };
-}
-
 export async function getArtworks(): Promise<Artwork[]> {
   const { data, error } = await supabase
     .from("artworks")
-    .select(`
-      id,
-      title,
-      description,
-      category_id,
-      image_url,
-      published_at,
-      created_at,
-      category:categories (
-        name
-      )
-    `)
+    .select("*")
     .order("published_at", { ascending: false });
 
   if (error) {
@@ -59,61 +23,69 @@ export async function getArtworks(): Promise<Artwork[]> {
     return [];
   }
 
-  return (data as SupabaseArtwork[]).map(formatArtwork);
+  // Load categories separately
+  const { data: categories } = await supabase
+    .from("categories")
+    .select("id, name");
+
+  const categoryMap = new Map(
+    (categories || []).map((c) => [c.id, c.name])
+  );
+
+  return (data || []).map((item) => ({
+    id: item.id,
+    title: item.title,
+    slug: item.slug,
+    description: item.description,
+    category_id: item.category_id,
+    category: categoryMap.get(item.category_id) || "Uncategorized",
+    image_url: item.image_url,
+    published_at: item.published_at,
+    created_at: item.created_at,
+  }));
 }
 
-export async function getArtworkById(
-  id: string
-): Promise<Artwork | null> {
-  const { data, error } = await supabase
-    .from("artworks")
-    .select(`
-      id,
-      title,
-      description,
-      category_id,
-      image_url,
-      published_at,
-      created_at,
-      category:categories (
-        name
-      )
-    `)
-    .eq("id", id)
-    .single();
-
-  if (error) {
-    console.error("Failed to load artwork:", error);
-    return null;
-  }
-
-  return formatArtwork(data as SupabaseArtwork);
-}
 export async function getArtworkBySlug(
   slug: string
 ): Promise<Artwork | null> {
   const { data, error } = await supabase
     .from("artworks")
-    .select(`
-      id,
-      slug,
-      title,
-      description,
-      category_id,
-      image_url,
-      published_at,
-      created_at,
-      category:categories (
-        name
-      )
-    `)
+    .select("*")
     .eq("slug", slug)
-    .single();
+    .maybeSingle();
 
   if (error) {
     console.error("Failed to load artwork:", error);
     return null;
   }
 
-  return formatArtwork(data as SupabaseArtwork);
+  if (!data) {
+    return null;
+  }
+
+  let categoryName = "Uncategorized";
+
+  if (data.category_id) {
+    const { data: category } = await supabase
+      .from("categories")
+      .select("name")
+      .eq("id", data.category_id)
+      .maybeSingle();
+
+    if (category?.name) {
+      categoryName = category.name;
+    }
+  }
+
+  return {
+    id: data.id,
+    title: data.title,
+    slug: data.slug,
+    description: data.description,
+    category_id: data.category_id,
+    category: categoryName,
+    image_url: data.image_url,
+    published_at: data.published_at,
+    created_at: data.created_at,
+  };
 }

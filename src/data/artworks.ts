@@ -1,54 +1,40 @@
+import { supabase } from "@/lib/supabase";
+
 export type Artwork = {
   id: string;
   title: string;
-  description: string;
+  slug: string;
+  description: string | null;
+  category_id: string | null;
   category: string;
-  image: string;
-  publishedAt: string;
-  likes: number;
-  loves: number;
-  appreciates: number;
-  comments: number;
+  image_url: string;
+  published_at: string;
+  created_at: string;
+};
+type SupabaseArtwork = {
+  id: string;
+  title: string;
+  slug: string;
+  description: string | null;
+  category_id: string | null;
+  image_url: string;
+  published_at: string;
+  created_at: string;
+  category: {
+    name: string;
+  } | null;   // ← changed from array to object
 };
 
-export const artworks: Artwork[] = [
-  {
-    id: "silent-thoughts",
-    title: "Silent Thoughts",
-    description:
-      "An exploration of emotion, atmosphere and visual storytelling.",
-    category: "Concept Art",
-    image: "/artworks/placeholder-1.jpg",
-    publishedAt: "2026-09-04T10:00:00",
-    likes: 24,
-    loves: 18,
-    appreciates: 2,
-    comments: 4,
-  },
-  {
-    id: "beyond-the-frame",
-    title: "Beyond the Frame",
-    description:
-      "A visual study exploring perspective, composition and imagination.",
-    category: "Character Design",
-    image: "/artworks/placeholder-2.jpg",
-    publishedAt: "2026-09-03T14:30:00",
-    likes: 31,
-    loves: 22,
-    appreciates: 3,
-    comments: 7,
-  },
-  {
-    id: "inner-world",
-    title: "Inner World",
-    description:
-      "A conceptual piece inspired by thoughts, identity and perception.",
-    category: "Concept Art",
-    image: "/artworks/placeholder-3.jpg",
-    publishedAt: "2026-09-02T09:15:00",
-    likes: 19,
-    loves: 15,
-    appreciates: 1,
-    comments: 3,
-  },
-];
+function formatArtwork(artwork: SupabaseArtwork): Artwork {
+  return {
+    id: artwork.id,
+    title: artwork.title,
+    slug: artwork.slug,
+    description: artwork.description,
+    category_id: artwork.category_id,
+    category: artwork.category?.name ?? "Uncategorized",  // ← fixed
+    image_url: artwork.image_url,
+    published_at: artwork.published_at,
+    created_at: artwork.created_at,
+  };
+}

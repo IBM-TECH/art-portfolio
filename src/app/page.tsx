@@ -3,6 +3,7 @@ import Footer from "./components/footer";
 import ArtworkGallery from "./components/ArtworkGallery";
 import RecentWorks from "./components/RecentWorks";
 import FAQ from "./components/FAQ";
+import MeetTheTeam from "@/app/components/MeetTheTeam";
 
 
 
@@ -105,6 +106,8 @@ export default function Home() {
     </div>
   </div>
 </section>
+
+<MeetTheTeam />
 
       {/* Contact */}
       <section

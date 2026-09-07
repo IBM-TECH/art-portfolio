@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
-import { artworks } from "@/data/artworks";
+import { getArtworkBySlug } from "@/lib/artworks";
 import ReactionBar from "@/app/components/ReactionBar";
 import ArtworkActions from "@/app/components/ArtworkActions";
 
@@ -12,7 +12,7 @@ type Props = {
 export default async function ArtworkPage({ params }: Props) {
   const { slug } = await params;
 
-  const artwork = artworks.find((item) => item.id === slug);
+  const artwork = await getArtworkBySlug(slug);
 
   if (!artwork) {
     notFound();
@@ -42,11 +42,19 @@ export default async function ArtworkPage({ params }: Props) {
           {/* Artwork Image */}
           <div className="overflow-hidden rounded-3xl border border-white/[0.07] bg-white/[0.025]">
             <div className="relative aspect-[4/5] w-full">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-sm text-white/20">
-                  Artwork preview
-                </span>
-              </div>
+              {artwork.image_url ? (
+                <img
+                  src={artwork.image_url}
+                  alt={artwork.title}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-sm text-white/20">
+                    Artwork preview
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -60,22 +68,24 @@ export default async function ArtworkPage({ params }: Props) {
               {artwork.title}
             </h1>
 
-            <p className="mt-5 text-sm leading-7 text-white/50">
-              {artwork.description}
-            </p>
+            {artwork.description && (
+              <p className="mt-5 text-sm leading-7 text-white/50">
+                {artwork.description}
+              </p>
+            )}
 
             <div className="mt-8">
-<ReactionBar
-  artworkId={artwork.id}
-  loveCount={artwork.loves}
-  likeCount={artwork.likes}
-  wowCount={artwork.appreciates}
-/>
+              <ReactionBar
+                artworkId={artwork.id}
+                loveCount={0}
+                likeCount={0}
+                wowCount={0}
+              />
             </div>
 
             <ArtworkActions
               artworkId={artwork.id}
-              commentCount={artwork.comments}
+              commentCount={0}
             />
 
             <div className="mt-10 border-t border-white/[0.06] pt-8">
