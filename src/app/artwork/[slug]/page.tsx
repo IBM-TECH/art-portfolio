@@ -4,6 +4,8 @@ import { ArrowLeft } from "lucide-react";
 import { getArtworkBySlug } from "@/lib/artworks";
 import ReactionBar from "@/app/components/ReactionBar";
 import ArtworkActions from "@/app/components/ArtworkActions";
+import RatingForm from "@/app/components/RatingForm";
+import { supabase } from "@/lib/supabase";
 
 type Props = {
   params: Promise<{ slug: string }>;

@@ -534,25 +534,272 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* RANKING VIEW - keep your existing RankingSection if you still have it */}
-        {view === "ranking" && (
-          <div className="mt-14">
-            <div className="mb-8 flex items-center justify-between">
-              <h2 className="text-lg font-medium">Rankings</h2>
-              <button
-                type="button"
-                onClick={() => setView("list")}
-                className="text-sm text-white/40 hover:text-white"
-              >
-                ← Back to artworks
-              </button>
-            </div>
-            <p className="text-sm text-white/40">
-              Ranking chart is available. (Use your previous RankingSection if needed.)
-            </p>
+{view === "ranking" && (
+  <RankingSection artworks={artworks} onBack={() => setView("list")} />
+)}
+      </div>
+    </main>
+  );
+}
+function RankingSection({
+  artworks,
+  onBack,
+}: {
+  artworks: Artwork[];
+  onBack: () => void;
+}) {
+const [metric, setMetric] = useState<"clicks" | "likes" | "ratings">("likes");
+  const [range, setRange] = useState<"24h" | "2d" | "7d" | "14d" | "3m">("7d");
+  const [loading, setLoading] = useState(true);
+  const [chartData, setChartData] = useState<any[]>([]);
+  const [activeCategories, setActiveCategories] = useState<string[]>([]);
+
+  const categoryColors: Record<string, string> = {
+    "Art Nouveau": "#f472b6",
+    "Art for T-Shirt Design": "#fb923c",
+    "Concept Art": "#a78bfa",
+    "Character Design": "#38bdf8",
+    "Comic Book": "#4ade80",
+    Cover: "#facc15",
+    "Furry Art": "#e879f9",
+    "Pixel Art": "#f87171",
+    "Pokémon Art": "#34d399",
+    "VTuber / PNGTuber": "#60a5fa",
+    VRChat: "#c084fc",
+    Uncategorized: "#94a3b8",
+  };
+
+  function getRangeDate(range: string) {
+    const now = new Date();
+    const days =
+      range === "24h"
+        ? 1
+        : range === "2d"
+          ? 2
+          : range === "7d"
+            ? 7
+            : range === "14d"
+              ? 14
+              : 90;
+    return new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
+  }
+
+  useEffect(() => {
+    async function loadChart() {
+      setLoading(true);
+      const fromDate = getRangeDate(range);
+      const fromISO = fromDate.toISOString();
+
+      const artworkCategory: Record<string, string> = {};
+      artworks.forEach((a) => {
+        artworkCategory[a.id] = a.category || "Uncategorized";
+      });
+
+      const categories = Array.from(
+        new Set(artworks.map((a) => a.category || "Uncategorized"))
+      );
+      setActiveCategories(categories);
+
+      const days: string[] = [];
+      const cursor = new Date(fromDate);
+      const now = new Date();
+      while (cursor <= now) {
+        days.push(cursor.toISOString().slice(0, 10));
+        cursor.setDate(cursor.getDate() + 1);
+      }
+
+      const daily: Record<string, Record<string, number>> = {};
+      days.forEach((day) => {
+        daily[day] = {};
+        categories.forEach((cat) => {
+          daily[day][cat] = 0;
+        });
+      });
+
+      if (metric === "likes") {
+        const { data: reactions } = await supabase
+          .from("reactions")
+          .select("artwork_id, reaction_type, created_at")
+          .gte("created_at", fromISO);
+
+        (reactions || []).forEach((r: any) => {
+          if (
+            ["love", "like", "appreciate", "wow"].includes(r.reaction_type)
+          ) {
+            const day = r.created_at.slice(0, 10);
+            const cat = artworkCategory[r.artwork_id] || "Uncategorized";
+            if (daily[day]) {
+              daily[day][cat] = (daily[day][cat] || 0) + 1;
+            }
+          }
+        });
+      } else {
+        const { data: comments } = await supabase
+          .from("comments")
+          .select("artwork_id, created_at")
+          .gte("created_at", fromISO);
+
+        (comments || []).forEach((c: any) => {
+          const day = c.created_at.slice(0, 10);
+          const cat = artworkCategory[c.artwork_id] || "Uncategorized";
+          if (daily[day]) {
+            daily[day][cat] = (daily[day][cat] || 0) + 1;
+          }
+        });
+      }
+
+      const cumulative: Record<string, number> = {};
+      categories.forEach((cat) => {
+        cumulative[cat] = 0;
+      });
+
+      const data = days.map((day) => {
+        const point: any = { date: day };
+        categories.forEach((cat) => {
+          cumulative[cat] += daily[day][cat] || 0;
+          point[cat] = cumulative[cat];
+        });
+        return point;
+      });
+
+      setChartData(data);
+      setLoading(false);
+    }
+
+    loadChart();
+  }, [metric, range, artworks]);
+
+  return (
+    <div className="mt-14">
+      <div className="mb-8 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="text-lg font-medium">Rankings</h2>
+          <p className="mt-1 text-sm text-white/40">
+            Category trends over time
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={onBack}
+          className="text-sm text-white/40 hover:text-white"
+        >
+          ← Back to artworks
+        </button>
+      </div>
+
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex rounded-2xl border border-white/10 bg-white/[0.03] p-1">
+          <button
+            type="button"
+            onClick={() => setMetric("likes")}
+            className={`rounded-xl px-4 py-2 text-sm transition ${
+              metric === "likes"
+                ? "bg-violet-500 text-white"
+                : "text-white/50 hover:text-white"
+            }`}
+          >
+            Likes
+          </button>
+          <button
+            type="button"
+            onClick={() => setMetric("comments")}
+            className={`rounded-xl px-4 py-2 text-sm transition ${
+              metric === "comments"
+                ? "bg-violet-500 text-white"
+                : "text-white/50 hover:text-white"
+            }`}
+          >
+            Comments
+          </button>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          {(
+            [
+              ["24h", "24hrs"],
+              ["2d", "2 days"],
+              ["7d", "7 days"],
+              ["14d", "14 days"],
+              ["3m", "3 months"],
+            ] as const
+          ).map(([value, label]) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() => setRange(value)}
+              className={`rounded-full px-3.5 py-1.5 text-xs transition ${
+                range === value
+                  ? "bg-white/15 text-white"
+                  : "bg-white/[0.04] text-white/45 hover:bg-white/[0.08] hover:text-white"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="rounded-3xl border border-white/[0.07] bg-white/[0.03] p-4 sm:p-6">
+        {loading ? (
+          <div className="flex h-[360px] items-center justify-center text-sm text-white/40">
+            Loading chart...
+          </div>
+        ) : (
+          <div className="h-[360px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={chartData}>
+                <CartesianGrid stroke="rgba(255,255,255,0.06)" />
+                <XAxis
+                  dataKey="date"
+                  stroke="rgba(255,255,255,0.3)"
+                  fontSize={11}
+                  tickFormatter={(v) =>
+                    new Date(v).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                    })
+                  }
+                />
+                <YAxis stroke="rgba(255,255,255,0.3)" fontSize={11} />
+                <Tooltip
+                  contentStyle={{
+                    background: "#18191c",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    borderRadius: "12px",
+                    fontSize: "12px",
+                  }}
+                />
+                <Legend />
+                {activeCategories.map((cat) => (
+                  <Line
+                    key={cat}
+                    type="monotone"
+                    dataKey={cat}
+                    stroke={categoryColors[cat] || "#94a3b8"}
+                    strokeWidth={2.5}
+                    dot={false}
+                    activeDot={{ r: 4 }}
+                  />
+                ))}
+              </LineChart>
+            </ResponsiveContainer>
           </div>
         )}
       </div>
-    </main>
+
+      <div className="mt-6 flex flex-wrap gap-3">
+        {activeCategories.map((name) => (
+          <div key={name} className="flex items-center gap-2">
+            <span
+              className="h-2.5 w-2.5 rounded-full"
+              style={{
+                backgroundColor: categoryColors[name] || "#94a3b8",
+              }}
+            />
+            <span className="text-xs text-white/50">{name}</span>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
