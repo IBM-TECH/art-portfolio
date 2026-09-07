@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import Image from "next/image";
 
 const navigation = [
   { label: "Home", href: "/" },
@@ -18,19 +19,19 @@ export default function Header() {
     <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-[#101113]/85 text-white backdrop-blur-2xl">
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 lg:px-10">
         {/* Brand */}
-        <Link
-          href="/"
-          className="flex items-center gap-3"
-          onClick={() => setMenuOpen(false)}
-        >
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/[0.05] text-sm font-bold text-white">
-            L
-          </div>
-
-          <span className="text-sm font-semibold tracking-[-0.01em]">
-            Luqqss temmy
-          </span>
-        </Link>
+<Link href="/" className="flex items-center gap-3">
+  <Image
+    src="/images/logo.png"
+    alt="Luqqss temmy"
+    width={36}
+    height={36}
+    className="rounded-lg"
+    priority
+  />
+  <span className="text-sm font-semibold tracking-[-0.01em]">
+    Luqqss temmy
+  </span>
+</Link>
 
         {/* Desktop navigation */}
         <nav className="hidden items-center gap-8 md:flex">

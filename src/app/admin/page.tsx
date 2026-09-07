@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import AdminGate from "@/app/components/AdminGate";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -24,6 +23,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import AdminGate from "@/app/components/AdminGate";
 
 type Category = {
   id: string;
@@ -33,6 +33,14 @@ type Category = {
 type View = "list" | "upload" | "ranking";
 
 export default function AdminPage() {
+  return (
+    <AdminGate>
+      <AdminDashboard />
+    </AdminGate>
+  );
+}
+
+function AdminDashboard() {
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -400,8 +408,7 @@ export default function AdminPage() {
 
                 {files.length > 1 && (
                   <p className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/45">
-                    Multiple images selected. Title & description are hidden. All
-                    images will be published under the selected category.
+                    Multiple images selected. Title & description are hidden.
                   </p>
                 )}
 

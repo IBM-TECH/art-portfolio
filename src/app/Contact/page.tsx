@@ -13,7 +13,7 @@ const digitalPresence = [
   {
     label: "Discord",
     value: "Mile_temss",
-    href: "https://discord.com/users/", // update if you get a real invite
+    href: "https://discord.com/users/Mile_temss", // update if you get a real invite
     icon: MessageCircle,
   },
   {
