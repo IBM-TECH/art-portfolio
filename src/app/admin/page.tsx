@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import AdminGate from "@/app/components/AdminGate";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -72,7 +73,6 @@ export default function AdminPage() {
   function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
     const selected = event.target.files;
     if (!selected || selected.length === 0) return;
-
     const list = Array.from(selected).slice(0, 15);
     setFiles(list);
     setImagePreviews(list.map((f) => URL.createObjectURL(f)));
@@ -94,9 +94,7 @@ export default function AdminPage() {
     setImagePreviews([]);
     setEditingId(null);
     setMessage(null);
-    if (categories.length > 0) {
-      setCategoryId(categories[0].id);
-    }
+    if (categories.length > 0) setCategoryId(categories[0].id);
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -108,7 +106,6 @@ export default function AdminPage() {
       return;
     }
 
-    // Edit single artwork
     if (editingId) {
       if (!title.trim()) {
         setMessage({ type: "error", text: "Title is required." });
@@ -163,14 +160,12 @@ export default function AdminPage() {
       return;
     }
 
-    // Multi / new upload
     if (files.length === 0) {
       setMessage({ type: "error", text: "Please select at least one image." });
       return;
     }
 
     setUploading(true);
-
     try {
       let successCount = 0;
 
@@ -202,8 +197,7 @@ export default function AdminPage() {
         const { error: insertError } = await supabase.from("artworks").insert({
           title: baseName,
           slug,
-          description:
-            files.length === 1 ? description.trim() || null : null,
+          description: files.length === 1 ? description.trim() || null : null,
           category_id: categoryId,
           image_url: publicUrl,
           published_at: new Date().toISOString(),
@@ -216,15 +210,11 @@ export default function AdminPage() {
         type: "success",
         text: `${successCount} artwork${successCount > 1 ? "s" : ""} published successfully!`,
       });
-
       resetForm();
       setView("list");
       await loadData();
     } catch (err: any) {
-      setMessage({
-        type: "error",
-        text: err.message || "Something went wrong.",
-      });
+      setMessage({ type: "error", text: err.message || "Something went wrong." });
     } finally {
       setUploading(false);
     }
@@ -243,7 +233,6 @@ export default function AdminPage() {
 
   async function handleDelete(id: string) {
     if (!confirm("Are you sure you want to delete this artwork?")) return;
-
     const { error } = await supabase.from("artworks").delete().eq("id", id);
     if (error) {
       alert("Failed to delete: " + error.message);
@@ -286,7 +275,6 @@ export default function AdminPage() {
                 <BarChart3 size={18} />
                 See Ranking
               </button>
-
               <button
                 type="button"
                 onClick={() => {
@@ -302,7 +290,6 @@ export default function AdminPage() {
           )}
         </div>
 
-        {/* UPLOAD VIEW */}
         {view === "upload" && (
           <form
             onSubmit={handleSubmit}
@@ -325,12 +312,10 @@ export default function AdminPage() {
             </div>
 
             <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
-              {/* Images */}
               <div>
                 <label className="text-xs font-medium uppercase tracking-[0.2em] text-white/40">
                   Artwork image{files.length > 1 ? "s" : ""} (max 15)
                 </label>
-
                 <label className="mt-3 flex min-h-[280px] cursor-pointer flex-col items-center justify-center overflow-hidden rounded-2xl border border-dashed border-white/10 bg-white/[0.025] p-4 transition hover:border-white/20">
                   {imagePreviews.length > 0 ? (
                     <div className="grid w-full grid-cols-3 gap-2 sm:grid-cols-4">
@@ -339,11 +324,7 @@ export default function AdminPage() {
                           key={i}
                           className="aspect-square overflow-hidden rounded-xl border border-white/10"
                         >
-                          <img
-                            src={src}
-                            alt={`Preview ${i + 1}`}
-                            className="h-full w-full object-cover"
-                          />
+                          <img src={src} alt="" className="h-full w-full object-cover" />
                         </div>
                       ))}
                     </div>
@@ -353,12 +334,9 @@ export default function AdminPage() {
                       <p className="mt-4 text-sm text-white/60">
                         Upload one or multiple artworks
                       </p>
-                      <p className="mt-1 text-xs text-white/25">
-                        PNG, JPG, WEBP · Max 15
-                      </p>
+                      <p className="mt-1 text-xs text-white/25">PNG, JPG, WEBP · Max 15</p>
                     </div>
                   )}
-
                   <input
                     type="file"
                     accept="image/png,image/jpeg,image/webp"
@@ -367,7 +345,6 @@ export default function AdminPage() {
                     className="hidden"
                   />
                 </label>
-
                 {files.length > 0 && (
                   <p className="mt-2 text-xs text-white/40">
                     {files.length} image{files.length > 1 ? "s" : ""} selected
@@ -375,9 +352,7 @@ export default function AdminPage() {
                 )}
               </div>
 
-              {/* Fields */}
               <div className="space-y-6">
-                {/* Category always visible */}
                 <div>
                   <label className="text-xs font-medium uppercase tracking-[0.2em] text-white/40">
                     Category *
@@ -395,7 +370,6 @@ export default function AdminPage() {
                   </select>
                 </div>
 
-                {/* Title & Description only when 0 or 1 image */}
                 {files.length <= 1 && (
                   <>
                     <div>
@@ -409,7 +383,6 @@ export default function AdminPage() {
                         className="mt-3 w-full rounded-2xl border border-white/[0.08] bg-white/[0.035] px-4 py-3 text-sm text-white outline-none placeholder:text-white/20 focus:border-violet-400/40"
                       />
                     </div>
-
                     <div>
                       <label className="text-xs font-medium uppercase tracking-[0.2em] text-white/40">
                         Description
@@ -427,8 +400,8 @@ export default function AdminPage() {
 
                 {files.length > 1 && (
                   <p className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/45">
-                    Multiple images selected. Title & description are hidden.
-                    All images will be published under the selected category.
+                    Multiple images selected. Title & description are hidden. All
+                    images will be published under the selected category.
                   </p>
                 )}
 
@@ -467,23 +440,19 @@ export default function AdminPage() {
           </form>
         )}
 
-        {/* LIST VIEW */}
         {view === "list" && (
           <div className="mt-14">
             <h2 className="text-lg font-medium">All artworks</h2>
-
             {loading ? (
               <p className="mt-8 text-sm text-white/40">Loading...</p>
             ) : artworks.length === 0 ? (
-              <p className="mt-8 text-sm text-white/40">
-                No artworks yet. Upload your first one.
-              </p>
+              <p className="mt-8 text-sm text-white/40">No artworks yet.</p>
             ) : (
               <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {artworks.map((artwork) => (
                   <div
                     key={artwork.id}
-                    className="overflow-hidden rounded-3xl border border-white/[0.07] bg-white/[0.03] transition hover:border-white/[0.12]"
+                    className="overflow-hidden rounded-3xl border border-white/[0.07] bg-white/[0.03]"
                   >
                     <div className="aspect-[3/4] w-full overflow-hidden">
                       {artwork.image_url ? (
@@ -498,29 +467,24 @@ export default function AdminPage() {
                         </div>
                       )}
                     </div>
-
                     <div className="p-5">
                       <h3 className="text-base font-medium text-white/90">
                         {artwork.title}
                       </h3>
-                      <p className="mt-1 text-sm text-white/40">
-                        {artwork.category}
-                      </p>
-
-                      <div className="mt-5 flex items-center gap-2">
+                      <p className="mt-1 text-sm text-white/40">{artwork.category}</p>
+                      <div className="mt-5 flex gap-2">
                         <button
                           type="button"
                           onClick={() => startEdit(artwork)}
-                          className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 text-sm text-white/70 transition hover:bg-white/[0.08] hover:text-white"
+                          className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 text-sm text-white/70 hover:bg-white/[0.08]"
                         >
                           <Pencil size={15} />
                           Edit
                         </button>
-
                         <button
                           type="button"
                           onClick={() => handleDelete(artwork.id)}
-                          className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-red-500/20 bg-red-500/10 px-3 py-2.5 text-sm text-red-300 transition hover:bg-red-500/20"
+                          className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-red-500/20 bg-red-500/10 px-3 py-2.5 text-sm text-red-300 hover:bg-red-500/20"
                         >
                           <Trash2 size={15} />
                           Delete
@@ -534,13 +498,14 @@ export default function AdminPage() {
           </div>
         )}
 
-{view === "ranking" && (
-  <RankingSection artworks={artworks} onBack={() => setView("list")} />
-)}
+        {view === "ranking" && (
+          <RankingSection artworks={artworks} onBack={() => setView("list")} />
+        )}
       </div>
     </main>
   );
 }
+
 function RankingSection({
   artworks,
   onBack,
@@ -548,7 +513,7 @@ function RankingSection({
   artworks: Artwork[];
   onBack: () => void;
 }) {
-const [metric, setMetric] = useState<"clicks" | "likes" | "ratings">("likes");
+  const [metric, setMetric] = useState<"clicks" | "likes" | "ratings">("likes");
   const [range, setRange] = useState<"24h" | "2d" | "7d" | "14d" | "3m">("7d");
   const [loading, setLoading] = useState(true);
   const [chartData, setChartData] = useState<any[]>([]);
@@ -572,15 +537,7 @@ const [metric, setMetric] = useState<"clicks" | "likes" | "ratings">("likes");
   function getRangeDate(range: string) {
     const now = new Date();
     const days =
-      range === "24h"
-        ? 1
-        : range === "2d"
-          ? 2
-          : range === "7d"
-            ? 7
-            : range === "14d"
-              ? 14
-              : 90;
+      range === "24h" ? 1 : range === "2d" ? 2 : range === "7d" ? 7 : range === "14d" ? 14 : 90;
     return new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
   }
 
@@ -617,34 +574,39 @@ const [metric, setMetric] = useState<"clicks" | "likes" | "ratings">("likes");
       });
 
       if (metric === "likes") {
-        const { data: reactions } = await supabase
+        const { data } = await supabase
           .from("reactions")
           .select("artwork_id, reaction_type, created_at")
           .gte("created_at", fromISO);
 
-        (reactions || []).forEach((r: any) => {
-          if (
-            ["love", "like", "appreciate", "wow"].includes(r.reaction_type)
-          ) {
+        (data || []).forEach((r: any) => {
+          if (["love", "like", "appreciate", "wow"].includes(r.reaction_type)) {
             const day = r.created_at.slice(0, 10);
             const cat = artworkCategory[r.artwork_id] || "Uncategorized";
-            if (daily[day]) {
-              daily[day][cat] = (daily[day][cat] || 0) + 1;
-            }
+            if (daily[day]) daily[day][cat] = (daily[day][cat] || 0) + 1;
           }
         });
-      } else {
-        const { data: comments } = await supabase
-          .from("comments")
+      } else if (metric === "ratings") {
+        const { data } = await supabase
+          .from("ratings")
           .select("artwork_id, created_at")
           .gte("created_at", fromISO);
 
-        (comments || []).forEach((c: any) => {
+        (data || []).forEach((r: any) => {
+          const day = r.created_at.slice(0, 10);
+          const cat = artworkCategory[r.artwork_id] || "Uncategorized";
+          if (daily[day]) daily[day][cat] = (daily[day][cat] || 0) + 1;
+        });
+      } else {
+        const { data } = await supabase
+          .from("clicks")
+          .select("artwork_id, created_at")
+          .gte("created_at", fromISO);
+
+        (data || []).forEach((c: any) => {
           const day = c.created_at.slice(0, 10);
           const cat = artworkCategory[c.artwork_id] || "Uncategorized";
-          if (daily[day]) {
-            daily[day][cat] = (daily[day][cat] || 0) + 1;
-          }
+          if (daily[day]) daily[day][cat] = (daily[day][cat] || 0) + 1;
         });
       }
 
@@ -674,43 +636,27 @@ const [metric, setMetric] = useState<"clicks" | "likes" | "ratings">("likes");
       <div className="mb-8 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-lg font-medium">Rankings</h2>
-          <p className="mt-1 text-sm text-white/40">
-            Category trends over time
-          </p>
+          <p className="mt-1 text-sm text-white/40">Category trends over time</p>
         </div>
-        <button
-          type="button"
-          onClick={onBack}
-          className="text-sm text-white/40 hover:text-white"
-        >
+        <button type="button" onClick={onBack} className="text-sm text-white/40 hover:text-white">
           ← Back to artworks
         </button>
       </div>
 
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex rounded-2xl border border-white/10 bg-white/[0.03] p-1">
-          <button
-            type="button"
-            onClick={() => setMetric("likes")}
-            className={`rounded-xl px-4 py-2 text-sm transition ${
-              metric === "likes"
-                ? "bg-violet-500 text-white"
-                : "text-white/50 hover:text-white"
-            }`}
-          >
-            Likes
-          </button>
-          <button
-            type="button"
-            onClick={() => setMetric("comments")}
-            className={`rounded-xl px-4 py-2 text-sm transition ${
-              metric === "comments"
-                ? "bg-violet-500 text-white"
-                : "text-white/50 hover:text-white"
-            }`}
-          >
-            Comments
-          </button>
+          {(["clicks", "likes", "ratings"] as const).map((m) => (
+            <button
+              key={m}
+              type="button"
+              onClick={() => setMetric(m)}
+              className={`rounded-xl px-4 py-2 text-sm capitalize transition ${
+                metric === m ? "bg-violet-500 text-white" : "text-white/50 hover:text-white"
+              }`}
+            >
+              {m}
+            </button>
+          ))}
         </div>
 
         <div className="flex flex-wrap gap-2">
@@ -792,9 +738,7 @@ const [metric, setMetric] = useState<"clicks" | "likes" | "ratings">("likes");
           <div key={name} className="flex items-center gap-2">
             <span
               className="h-2.5 w-2.5 rounded-full"
-              style={{
-                backgroundColor: categoryColors[name] || "#94a3b8",
-              }}
+              style={{ backgroundColor: categoryColors[name] || "#94a3b8" }}
             />
             <span className="text-xs text-white/50">{name}</span>
           </div>

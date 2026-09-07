@@ -5,11 +5,7 @@ import { Star } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { getVisitorId } from "@/lib/visitor";
 
-type Props = {
-  artworkId: string;
-};
-
-export default function RatingForm({ artworkId }: Props) {
+export default function RatingForm({ artworkId }: { artworkId: string }) {
   const [name, setName] = useState("");
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
@@ -34,10 +30,8 @@ export default function RatingForm({ artworkId }: Props) {
     }
 
     setLoading(true);
-
     try {
       const visitorId = getVisitorId();
-
       const { error } = await supabase.from("ratings").insert({
         artwork_id: artworkId,
         visitor_id: visitorId,
@@ -53,10 +47,7 @@ export default function RatingForm({ artworkId }: Props) {
       setRating(0);
       setReview("");
     } catch (err: any) {
-      setMessage({
-        type: "error",
-        text: err.message || "Could not submit rating.",
-      });
+      setMessage({ type: "error", text: err.message || "Could not submit." });
     } finally {
       setLoading(false);
     }
@@ -69,7 +60,6 @@ export default function RatingForm({ artworkId }: Props) {
     >
       <h3 className="text-sm font-medium text-white/80">Rate this artwork</h3>
 
-      {/* Stars */}
       <div className="mt-4 flex items-center gap-1">
         {[1, 2, 3, 4, 5].map((value) => (
           <button
@@ -78,8 +68,8 @@ export default function RatingForm({ artworkId }: Props) {
             onClick={() => setRating(value)}
             onMouseEnter={() => setHover(value)}
             onMouseLeave={() => setHover(0)}
-            className="p-0.5 transition"
-            aria-label={`${value} star${value > 1 ? "s" : ""}`}
+            className="p-0.5"
+            aria-label={`${value} stars`}
           >
             <Star
               size={22}
@@ -101,7 +91,6 @@ export default function RatingForm({ artworkId }: Props) {
           placeholder="Your name"
           className="w-full rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-sm text-white outline-none placeholder:text-white/25 focus:border-violet-400/40"
         />
-
         <textarea
           value={review}
           onChange={(e) => setReview(e.target.value)}

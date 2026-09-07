@@ -6,7 +6,8 @@ import ReactionBar from "@/app/components/ReactionBar";
 import ArtworkActions from "@/app/components/ArtworkActions";
 import RatingForm from "@/app/components/RatingForm";
 import { supabase } from "@/lib/supabase";
-
+import TrackClick from "@/app/components/TrackClick";
+import RatingsList from "@/app/components/RatingsList";
 type Props = {
   params: Promise<{ slug: string }>;
 };
@@ -84,6 +85,9 @@ export default async function ArtworkPage({ params }: Props) {
                 wowCount={0}
               />
             </div>
+<TrackClick artworkId={artwork.id} />
+<RatingForm artworkId={artwork.id} />
+<RatingsList artworkId={artwork.id} />
 
             <ArtworkActions
               artworkId={artwork.id}
