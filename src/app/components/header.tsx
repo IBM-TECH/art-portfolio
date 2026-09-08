@@ -29,7 +29,7 @@ export default function Header() {
   priority
 />
   <span className="text-sm font-semibold tracking-[-0.01em]">
-    Luqqss temmy
+    Peak Achievers Team
   </span>
 </Link>
 
