@@ -20,14 +20,14 @@ export default function Header() {
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 lg:px-10">
         {/* Brand */}
 <Link href="/" className="flex items-center gap-3">
-  <Image
-    src="/images/logo.png"
-    alt="Luqqss temmy"
-    width={36}
-    height={36}
-    className="rounded-lg"
-    priority
-  />
+<Image
+  src="/images/logo.png"
+  alt="Luqqss temmy"
+  width={36}
+  height={36}
+  className="h-9 w-9 rounded-lg object-contain"
+  priority
+/>
   <span className="text-sm font-semibold tracking-[-0.01em]">
     Luqqss temmy
   </span>
