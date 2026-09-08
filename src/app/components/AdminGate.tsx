@@ -28,26 +28,33 @@ export default function AdminGate({ children }: { children: React.ReactNode }) {
     setChecking(false);
   }, []);
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setError("");
+async function handleSubmit(e: React.FormEvent) {
+  e.preventDefault();
+  setError("");
 
-    const cleanEmail = email.trim().toLowerCase();
+  try {
+    const res = await fetch("/api/admin/verify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: email.trim().toLowerCase(),
+        password,
+      }),
+    });
 
-    if (cleanEmail !== ADMIN_EMAIL) {
-      setError("Email not authorized for admin access.");
+    const data = await res.json();
+
+    if (!res.ok || !data.ok) {
+      setError(data.message || "Invalid email or password.");
       return;
     }
 
-    if (password !== ADMIN_PASSWORD) {
-      setError("Wrong password.");
-      return;
-    }
-
-    // One-time device certification (this browser only)
     localStorage.setItem(DEVICE_KEY, "true");
     setOk(true);
+  } catch {
+    setError("Could not verify. Try again.");
   }
+}
 
   function revokeDevice() {
     localStorage.removeItem(DEVICE_KEY);
